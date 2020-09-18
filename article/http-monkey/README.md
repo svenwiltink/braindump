@@ -2,7 +2,7 @@
 
 ### Why?
 As a member and moderator of the Discord Gophers server we try to help
-people with their question about Go. Most of the time these questions
+people with their questions about Go. Most of the time these questions
 are fairly usual: How do goroutines work? Why does my application crash?
 But over the last couple of months we have had new people come in and
 ask if they can easily change the header order of net/http. The answer
@@ -25,7 +25,7 @@ language. The language spec simply prevents us messing around with
 the code during runtime. Or so we thought! Bouke has found a way to do
 this in Go by using a couple of clever tricks to change the function Go
 executes when a function is called. The [blog post](https://bou.ke/blog/monkey-patching-in-go/) 
-does a great job of explaining how it works so I won't go into detail here.
+does a great job of explaining how it works, so I won't go into detail here.
 
 ### The hack part I
 So Go can be monkey patched. Let's throw some patches at net/http and 
