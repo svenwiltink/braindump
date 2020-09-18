@@ -50,7 +50,17 @@ This pesky validation has to go away! It is performed in the [Transport layer](h
 ) by calling httpguts.ValidHeaderFieldValue. The patch target has found!
 Trying to patch this results in the following code:
 
-<link to file>
+<script src="https://gist.github.com/svenwiltink/8850a82a12460e3efb658b0def752bc1.js"></script>
 
 The patch is in place and the code run, disappointingly yielding the same
 error.
+
+```text
+Get "https://sven.wiltink.dev": net/http: invalid header field value "SomeValue\
+nOtherHeader: OtherValue" for key SomeHeader
+```
+
+This doesn't add up, the function was patched! After doing some digging
+it turns out Go vendors the /x/ packages. The function we are patching isn't the
+same instance of the function. The vendored version can be found [here](https://github.com/golang/go/tree/c5cf6624076a644906aa7ec5c91c4e01ccd375d3/src/vendor/golang.org/x/net/http/httpguts).
+How do we find this vendored function and can we patch it?
