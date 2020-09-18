@@ -38,6 +38,9 @@ sent as multiple headers. This normally won't work as newlines aren't
 are not allowed in the header value. net/http will return an error if
 you try:
 
+<script src="https://gist.github.com/svenwiltink/8e592735143e4d665790ce33a3250fc6.js"></script>
+
+
 ```text
 Get "https://sven.wiltink.dev": net/http: invalid header field value "SomeValue\
 nOtherHeader: OtherValue" for key SomeHeader
