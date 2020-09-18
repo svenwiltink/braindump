@@ -34,8 +34,8 @@ It is defined as `type Header map[string][]string` so we'll have to
 make that work. <insert github username (doad)> came up with the idea
 of using a single entry in the header map to store the other headers as
 well. If the 'single' header had newlines in them they would be properly
-sent as multiple headers. This normally won't work as newlines aren't
-are not allowed in the header value. net/http will return an error if
+sent as multiple headers. This normally won't work as newlines are not
+allowed in the header value. net/http will return an error if
 you try:
 
 <script src="https://gist.github.com/svenwiltink/8e592735143e4d665790ce33a3250fc6.js"></script>
