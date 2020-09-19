@@ -60,7 +60,30 @@ Get "https://sven.wiltink.dev": net/http: invalid header field value "SomeValue\
 nOtherHeader: OtherValue" for key SomeHeader
 ```
 
-This doesn't add up, the function was patched! After doing some digging
-it turns out Go vendors the /x/ packages. The function we are patching isn't the
-same instance of the function. The vendored version can be found [here](https://github.com/golang/go/tree/c5cf6624076a644906aa7ec5c91c4e01ccd375d3/src/vendor/golang.org/x/net/http/httpguts).
-How do we find this vendored function and can we patch it?
+This doesn't add up, the function was patched! So why isn't the patched function called?
+By adding this snippet of code in net/http and out main we can see the function pointers
+are in fact different:
+```go
+fmt.Printf("pointer in net/http: %d\n", reflect.ValueOf(httpguts.ValidHeaderFieldValue).Pointer())
+fmt.Printf("pointer in main: %d\n", reflect.ValueOf(httpguts.ValidHeaderFieldValue).Pointer())
+```
+```
+pointer in main: 6554096
+pointer in net/http: 6228976
+```
+
+### The detective work
+Somehow the standard libary calls a different 'instance' of the function that we are trying
+to patch. Which one is it and why does it have a different address? Using `readelf` we can dump
+the symbols in the binary. After converting the pointer to hex I found the following:
+````go
+readelf -a -W banaan | grep -i 5f0bf0     
+  6610: 00000000005f0bf0    60 FUNC    GLOBAL DEFAULT    1 vendor/golang.org/x/net/http/httpguts.ValidHeaderFieldValue
+````
+net/http is calling a function that is prefixed with 'vendor'. It turns out Go vendors the 
+/x/ packages it needs in the standard library. The function we are patching isn't the
+same 'instance' of the function. The vendored version can be found [here](https://github.com/golang/go/tree/c5cf6624076a644906aa7ec5c91c4e01ccd375d3/src/vendor/golang.org/x/net/http/httpguts).
+We don't normally have access to this function from within out application, but there is 
+a hacky way.
+
+### Linkname enters the chat
