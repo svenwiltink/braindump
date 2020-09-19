@@ -31,7 +31,7 @@ does a great job of explaining how it works, so I won't go into detail here.
 So Go can be monkey patched. Let's throw some patches at net/http and 
 call it a day. There is no way to change the types of the header field.
 It is defined as `type Header map[string][]string` so we'll have to
-make that work. <insert github username (doad)> came up with the idea
+make that work. [Doad](https://github.com/zacharyburkett) came up with the idea
 of using a single entry in the header map to store the other headers as
 well. If the 'single' header had newlines in them they would be properly
 sent as multiple headers. This normally won't work as newlines are not
@@ -80,7 +80,7 @@ the symbols in the binary. After converting the pointer to hex I found the follo
 readelf -a -W banaan | grep -i 5f0bf0     
   6610: 00000000005f0bf0    60 FUNC    GLOBAL DEFAULT    1 vendor/golang.org/x/net/http/httpguts.ValidHeaderFieldValue
 ````
-net/http is calling a function that is prefixed with 'vendor'. It turns out Go vendors the 
+net/http is calling a function that is prefixed with "vendor". It turns out Go vendors the 
 /x/ packages it needs in the standard library. The function we are patching isn't the
 same 'instance' of the function. The vendored version can be found [here](https://github.com/golang/go/tree/c5cf6624076a644906aa7ec5c91c4e01ccd375d3/src/vendor/golang.org/x/net/http/httpguts).
 We don't normally have access to this function from within out application, but there is 
