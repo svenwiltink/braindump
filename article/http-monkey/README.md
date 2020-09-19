@@ -61,7 +61,7 @@ nOtherHeader: OtherValue" for key SomeHeader
 ```
 
 This doesn't add up, the function was patched! So why isn't the patched function called?
-By adding this snippet of code in net/http and out main we can see the function pointers
+By adding this snippet of code in net/http and our main we can see the function pointers
 are in fact different:
 ```go
 fmt.Printf("pointer in net/http: %d\n", reflect.ValueOf(httpguts.ValidHeaderFieldValue).Pointer())
@@ -73,7 +73,7 @@ pointer in net/http: 6228976
 ```
 
 ### The detective work
-Somehow the standard libary calls a different 'instance' of the function that we are trying
+Somehow the standard library calls a different 'instance' of the function that we are trying
 to patch. Which one is it and why does it have a different address? Using `readelf` we can dump
 the symbols in the binary. After converting the pointer to hex I found the following:
 ````go
