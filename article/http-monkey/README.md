@@ -15,8 +15,7 @@ written by [Bouke](https://github.com/bouk) about monkey patching in go.
 ### What is this monkey you speak of?
 [Monkey patching](https://en.wikipedia.org/wiki/Monkey_patch) in short
 is replacing existing code with something else while the application is 
-is replacing existing code with something else while the application is 
-running. In the ruby word, and in some other dynamic languages, this
+running. In the ruby world, and in some other dynamic languages, this
 is used to make testing easier in certain cases. It can also be used
 to add new methods to existing classes. 
 
