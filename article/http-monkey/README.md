@@ -83,16 +83,16 @@ readelf -a -W banaan | grep -i 5f0bf0
 net/http is calling a function that is prefixed with "vendor". It turns out Go vendors the 
 /x/ packages it needs in the standard library. The function we are patching isn't the
 same 'instance' of the function. The vendored version can be found [here](https://github.com/golang/go/tree/c5cf6624076a644906aa7ec5c91c4e01ccd375d3/src/vendor/golang.org/x/net/http/httpguts).
-We don't normally have access to this function from within out application, but there is 
+We don't normally have access to this function from within our application, but there is 
 a hacky way.
 
 ### Linkname enters the chat
 The go compiler toolchain has a special tool that enables us to define a function link it
 to a different implementation. This is called `linkname` and is used by some parts of the standard
-library to call functions without importing a package. An example of this is the `sync` package.
-The `sync` package wants call the `runtime` function `nanotime` but because of import restrictions
-it can't import the runtime package directly. Instead the `sync` package [defines a function stub](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/sync/runtime.go#L57)
-and the `runtime` package uses `linkname` [to link the two functions together](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/runtime/sema.go#L614).
+library to call functions without importing a package. An example of this is the sync package.
+The sync package wants call the runtime function `nanotime` but because of import restrictions
+it can't import the runtime package directly. Instead the sync package [defines a function stub](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/sync/runtime.go#L57)
+and the runtime package uses `linkname` [to link the two functions together](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/runtime/sema.go#L614).
 
 The behaviour of `linkname` and other `//go:` comments is explained in the compile command documentation: https://golang.org/cmd/compile/
 ```go
@@ -111,14 +111,14 @@ pointer in net/http: 6228976
 ```
 
 There is now a function called `linknameMagic` that shares the function pointer of the vendored
-function! Because `linknameMagic` is no different that other functions from the perspective of
+function! Because `linknameMagic` is no different from other functions from the perspective of
 our code it can also be monkey patched:
 
 <script src="https://gist.github.com/svenwiltink/423ca78638668eb46c7e97dfd64973f2.js"></script>
 
 ```text
-pointer in main: 6155680
-pointer in net/http: 6155680
+pointer in main: 6228976
+pointer in net/http: 6228976
 the patched function was called!
 the patched function was called!
 the patched function was called!
@@ -127,13 +127,11 @@ the patched function was called!
 <nil>
 ```
 
-Also not how performing the request also does not return an error anymore. The `net/http` library
-has been fooled and the validation has been removed. When inspecting the http request the headers
-are however still on a single line and not newline separated as they should. This is because the 
-transport code of net/http (net/http.Header.writeSubset) replaces all newlines with spaces. But 
-there is nothing that stops us from monkey patching that as well ;). If you're looking for a
-complete implementation of the arbitrary header order you are out of luck, I will be leaving that
-as an exercise for the reader.
+Note how performing the request also does not return an error anymore. The `net/http` library
+has been fooled!When inspecting the http request the headers are however still on a single line 
+and not newline separated as they should. This is because the transport code of net/http 
+(net/http.Header.writeSubset) replaces all newlines with spaces. There is nothing that stops us 
+from monkey patching that as well, but I will be leaving that as an exercise for the reader.
 
 
 Signing off,  
