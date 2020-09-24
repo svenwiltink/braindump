@@ -10,11 +10,11 @@ has always been no, you would have to fork Go and change the net/http
 library yourself. After a while the other Gophers in the server were
 thinking of other possibilities. It has been on the back burner for a
 while, until we read the excellent [blog post](https://bou.ke/blog/monkey-patching-in-go/) 
-written by [Bouke](https://github.com/bouk) about monkey patching
-patching in go.
+written by [Bouke](https://github.com/bouk) about monkey patching in go.
 
 ### What is this monkey you speak of?
 [Monkey patching](https://en.wikipedia.org/wiki/Monkey_patch) in short
+is replacing existing code with something else while the application is 
 is replacing existing code with something else while the application is 
 running. In the ruby word, and in some other dynamic languages, this
 is used to make testing easier in certain cases. It can also be used
@@ -47,7 +47,7 @@ nOtherHeader: OtherValue" for key SomeHeader
 ```
 
 This pesky validation has to go away! It is performed in the [Transport layer](https://github.com/golang/go/blob/b1be1428dc7d988c2be9006b1cbdf3e513d299b6/src/net/http/transport.go#L514
-) by calling httpguts.ValidHeaderFieldValue. The patch target has found!
+) by calling httpguts.ValidHeaderFieldValue. The patch target has been found!
 Trying to patch this results in the following code:
 
 <script src="https://gist.github.com/svenwiltink/8850a82a12460e3efb658b0def752bc1.js"></script>
@@ -87,10 +87,10 @@ We don't normally have access to this function from within our application, but 
 a hacky way.
 
 ### Linkname enters the chat
-The go compiler toolchain has a special tool that enables us to define a function link it
+The go compiler toolchain has a special tool that enables us to define a function and link it
 to a different implementation. This is called `linkname` and is used by some parts of the standard
-library to call functions without importing a package. An example of this is the sync package.
-The sync package wants call the runtime function `nanotime` but because of import restrictions
+library to call functions without importing a package. An example of this is the sync package, which
+wants to call the runtime function `nanotime` but because of import restrictions
 it can't import the runtime package directly. Instead the sync package [defines a function stub](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/sync/runtime.go#L57)
 and the runtime package uses `linkname` [to link the two functions together](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/runtime/sema.go#L614).
 
@@ -100,7 +100,7 @@ The behaviour of `linkname` and other `//go:` comments is explained in the [comp
 ```
 > This special directive does not apply to the Go code that follows it. Instead, the //go:linkname directive instructs the compiler to use “importpath.name” as the object file symbol name for the variable or function declared as “localname” in the source code. If the “importpath.name” argument is omitted, the directive uses the symbol's default object file symbol name and only has the effect of making the symbol accessible to other packages. Because this directive can subvert the type system and package modularity, it is only enabled in files that have imported "unsafe".
 
-In the previous section the name of the vendored function function was discovered. `linkname` can
+In the previous section the name of the vendored function was discovered. `linkname` can
 be used to 'magically' have access to it. Using the code below we can demonstrate the pointer of this
 new function is the same as the one used by `net/http`:
 
