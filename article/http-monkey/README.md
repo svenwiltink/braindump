@@ -135,4 +135,4 @@ as well, but I will be leaving that as an exercise for the reader.
 
 
 Signing off,  
-Sgt_Tailor, aka CursedLinkname
+Sven "CursedLinkname" Wiltink
