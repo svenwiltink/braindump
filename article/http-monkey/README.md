@@ -128,7 +128,7 @@ the patched function was called!
 ```
 
 Note how performing the request also does not return an error anymore. The `net/http` library
-has been fooled!When inspecting the http request the headers are however still on a single line 
+has been fooled! When inspecting the http request the headers are however still on a single line 
 and not newline separated as they should. This is because [the transport code of net/http](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/net/http/header.go#L186)
 replaces all newlines with spaces. There is nothing that stops us from monkey patching that
 as well, but I will be leaving that as an exercise for the reader.
