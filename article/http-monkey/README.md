@@ -94,7 +94,7 @@ The sync package wants call the runtime function `nanotime` but because of impor
 it can't import the runtime package directly. Instead the sync package [defines a function stub](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/sync/runtime.go#L57)
 and the runtime package uses `linkname` [to link the two functions together](https://github.com/golang/go/blob/0a820007e70fdd038950f28254c6269cd9588c02/src/runtime/sema.go#L614).
 
-The behaviour of `linkname` and other `//go:` comments is explained in the compile command documentation: https://golang.org/cmd/compile/
+The behaviour of `linkname` and other `//go:` comments is explained in the [compile command documentation](https://golang.org/cmd/compile/)
 ```go
 //go:linkname localname [importpath.name]
 ```
