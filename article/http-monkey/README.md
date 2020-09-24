@@ -1,7 +1,7 @@
 ## Monkey patching net/http
 
 ### Why?
-As a member and moderator of the Discord Gophers server we try to help
+As a member and moderator of the [Discord Gophers](https://discord.gg/VF92f7M) server we try to help
 people with their questions about Go. Most of the time these questions
 are fairly usual: How do goroutines work? Why does my application crash?
 But over the last couple of months we have had new people come in and
